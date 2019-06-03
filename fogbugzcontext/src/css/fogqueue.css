@@ -1,0 +1,100 @@
+#fogqueue-container{
+    position: fixed;
+    width: 20%;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #efefef;
+    border: 1px solid #bac2cc;
+}
+.fogqueue-title{
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+    background: #e0e9f1;
+    font-weight:bold;
+    text-transform: uppercase;
+}
+#fogqueue-addcase{
+    padding: 5px;
+    text-align: center;
+    background: #f6f6f6;
+}
+#new_case_input{
+    border-radius: 5px;
+    padding: 5px;
+}
+#new_case_button{
+    padding: 5px;
+    border: none;
+    background: #e0e9f1;
+    border: white 1px solid;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all ease-in-out 0.3s;
+}
+#new_case_button:hover{
+    background: white;
+    border: 1px solid black;
+    cursor: pointer;
+}
+#fogqueue{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+    padding: 10px 0;
+    height: auto;
+    overflow-y: scroll;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 120px;
+}
+.fogqueue-item{
+    padding: 5px 2px;
+    border-radius: 5px;
+    background: white;
+    margin: 5px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+.fogqueue-item a{
+    display: block;
+}
+.fogqueue-caseid{
+    float: left;
+    border-right: 1px solid rgb(186, 194, 204);
+    padding-right: 10px;
+    width: 40%;
+}
+.fogqueue-casetitle{
+    float: left;
+    padding-left: 5px;
+    border-right: 1px solid rgb(186, 194, 204);
+    width: 48%;
+}.fogqueue-casestatus{
+    padding-right: 5px;
+}
+button.fogqueue-removeItem{
+    background: red;
+    border: none;
+    float: right;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+.fogqueue-message {
+    background: red;
+    padding: 5px;
+    text-align: center;
+    color: white;
+    position: fixed;
+    left: 0px;
+    display: none;
+    right: 80%;
+    transition: all ease-in-out 0.3s;
+}

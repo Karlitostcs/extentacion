@@ -1,0 +1,41 @@
+{
+    "manifest_version":2,
+    "name":"fogbugz context",
+    "version":"1.0",
+    "description":"This extension provides a context menu for interfacing with fogbugz",
+    "icons":{
+        "128":"icons/icon128.png",
+        "48":"icons/icon48.png",
+        "16":"icons/icon16.png"
+    },
+    "web_accessible_resources": [
+        "fix.css"
+    ],
+    "content_scripts": [
+        {
+          "matches": [
+            "http://fogbugz.tcsgeeks.com/*"
+          ],
+          "run_at":"document_end",
+          "css":["src/css/fogqueue.css"],
+          "js": [
+                  "src/js/minified/jquery.min.js",
+                  "src/js/fogbugz_queue_lib/fogbugz_api.js",
+                  "src/js/fogbugz_queue_lib/fogdata.js",
+                  "src/js/fogbugz_queue_lib/fogqueue.js",
+                  "src/js/fogbugz_queue_lib/fogmain.js"
+                ]
+        }
+      ],
+    "browser_action":{
+        "default_icon":"icons/icon16.png",
+        "default_popup":"views/index.html"
+    },
+    "background":{
+        "scripts":["src/js/eventPage.js"],
+        "persistent":false
+    },
+    "options_page":"views/options.html",
+    "permissions":["storage","notifications","contextMenus","tabs"]
+
+}
