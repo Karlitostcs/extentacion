@@ -7,6 +7,3 @@
 5. once you have enabled developer mode, three options will apear, you will want to select "load unpacked"
 6. then browse to where the folder of the extension is, in this case select on fogbugzv1 folder and click on select.
 7. this will load the extension on the browser, when updating, simply remove the current extension and go through the process again.
-
-## Current bugs.
-1. fogbugz context menu item shows up in any site. Will need to only show up in fogbugz
