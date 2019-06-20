@@ -1,0 +1,98 @@
+USE [twretPRD_GraevesAutoTP]
+GO
+/****** Object:  StoredProcedure [dbo].[cusp_GoodyearNonWDPOSI_ParentLoop_2019]    Script Date: 6/20/2019 10:12:58 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER PROCEDURE [dbo].[cusp_GoodyearNonWDPOSI_ParentLoop_2019]    
+(    
+--DECLARE
+ @CompanyID int,    
+ @LocationID int,    
+ @ExportTypeID int,    
+ @StartDateTime DateTime,    
+ @EndDateTime DateTime   
+)    
+AS    
+/********************************************************************    
+     
+********************************************************************/    
+SET NOCOUNT ON;    
+SET @StartDateTime =        
+  (SELECT User1_Value FROM ExportConfig WHERE GM_COMPANY_ID = @CompanyID And GM_LOCATION_ID = @LocationID And ExportTypeId = @ExportTypeID)    
+   --'2014-01-22'    
+    
+declare @FileNumber char(9)    
+set @FileNumber =     
+ (SELECT User2_Value + 1 FROM ExportConfig WHERE GM_COMPANY_ID = @CompanyID And GM_LOCATION_ID = @LocationID And ExportTypeId = @ExportTypeID)    
+    
+    
+SET @LocationID = CASE WHEN     
+ (    
+  SELECT COUNT(*) as NUMROWS    
+  From      
+  twretPRD_GraevesAutoTP.dbo.SrHeader I (NoLock)     
+  Inner Join     
+  twretPRD_GraevesAutoTP.dbo.SrLineItem IL (NoLock)    
+  on I.COMPANYID = IL.COMPANYID    
+  AND I.LOCATIONID = IL.LOCATIONID    
+  AND I.SrOrderId = IL.SrOrderId    
+  Inner Join     
+  twretPRD_GraevesAutoTP.dbo.SKU SKU (NOLOCK)    
+  ON IL.SkuCode = SKU.SkuCode    
+  INNER JOIN 
+  twretPRD_GraevesAutoTP.dbo.SkuCompanyInventoryRef sr
+  ON sr.skuid = SKU.skuid	 
+  INNER JOIN  
+  twretPRD_GraevesAutoTP.dbo.SkuManufacturer M (NOLOCK)    
+  on sr.MANUFACTURERID = M.MANUFACTURERID    
+  Inner Join    
+  twretPRD_BurtBros.dbo.GoodyearNonSig N (NoLock)    
+  on I.LOCATIONID = N.LocationId    
+  INNER JOIN    
+  twretPRD_GraevesAutoTP.dbo.CUSTOMERADDRESS CA (NOLOCK)    
+  ON I.COMPANYID = CA.COMPANYID    
+  AND I.CUSTOMERID = CA.CUSTOMERID    
+  --AND I.CustomerADDRESSID = CA.GM_CUSTOMER_ADDRESS_ID    
+  INNER JOIN    
+  twretPRD_GraevesAutoTP.dbo.CUSTOMER C (NOLOCK)    
+  ON CA.COMPANYID = C.COMPANYID    
+  AND CA.CUSTOMERID = C.CUSTOMERID  
+
+  Where      
+  I.COMPANYID = @CompanyID      
+  and I.SrOrderStateId = 90   
+  AND I.DateCompleted >= @StartDateTime    
+  AND I.DateCompleted <= @EndDateTime    
+  AND IL.QUANTITY <> 0      
+  AND sku.SkuTypeId = 0    
+  And M.Lookup = 'Goodyear'     
+ ) > 0     
+  THEN @LocationId     
+  ELSE 999999 END    
+    
+Select    
+ 1 as 'RecordType',    
+ Cast(WhseAssoc as Char(10)) as GoodyearNonSig,     
+ Cast('' as Char(25)) as InvoiceNumberBlank,     
+ Convert(Char(8), (SELECT dbo.fnGetLocationDatetime(@CompanyID, @LocationID)), 112) as [InvoiceDate],    
+ Cast('' as Char(9)) as ProductCodeBlank,     
+ Cast('' as Char(1)) as PosNegBlank,     
+ Cast(@FileNumber as Char(9)) as FileNumber,    
+ Cast('' as Char(147)) as FillerBlank     
+     
+ --Replace(Convert(Char(5), GetDate(), 108),':','') as [Current_Time],    
+ --EC.User3_Value as T_P_Flag, --(T or P) --User3 is used for EDI Transmission Mode    
+ --Convert(Char(8), @EndDateTime, 112) as [Ship_Date], --Invoice Date of sales transactions    
+ --Cast('' as Char(35)) as MF_NAME, --MESSAGE FROM NAME -> leave blank    
+ --Cast('' as Char(17)) as MF_CODE, --Message From Customer Code -> leave blank    
+ --Cast('' as Char(35)) as MT_NAME, --MESSAGE TO NAME -> leave blank    
+ --Cast('' as Char(17)) as MT_CODE --Message TO Customer Code -> leave blank    
+From    
+ dbo.GoodyearNonSig G    
+Where    
+  LocationId = 1 -- @LocationID 
+
